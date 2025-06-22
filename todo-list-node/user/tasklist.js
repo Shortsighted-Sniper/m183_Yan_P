@@ -1,6 +1,8 @@
 const db = require('../fw/db');
+const escape = require('escape-html');
+const login = require('../login');
 
-async function getHtml(req) {
+async function getHtml(user) {
     let html = `
     <section id="list">
         <a href="edit">Create Task</a>
@@ -13,17 +15,18 @@ async function getHtml(req) {
             </tr>
     `;
 
-    let conn = await db.connectDB();
-    let [result, fields] = await conn.query('select ID, title, state from tasks where UserID = ' + req.cookies.userid);
-    console.log(result);
-    result.forEach(function(row) {
+    const sql = "SELECT ID, title, state FROM tasks WHERE UserID=?";
+    const params = [user.userid];
+    const results = await db.executeStatement(sql, params);
+
+    results.forEach(function(row) {
         html += `
             <tr>
-                <td>`+row.ID+`</td>
-                <td class="wide">`+row.title+`</td>
+                <td>`+escape(row.ID)+`</td>
+                <td class="wide">`+escape(row.title)+`</td>
                 <td>`+ucfirst(row.state)+`</td>
                 <td>
-                    <a href="edit?id=`+row.ID+`">edit</a> | <a href="delete?id=`+row.ID+`">delete</a>
+                    <a href="edit?id=`+escape(row.ID)+`">edit</a>
                 </td>
             </tr>`;
     });

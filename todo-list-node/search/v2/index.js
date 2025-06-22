@@ -1,18 +1,24 @@
+const escape = require('escape-html');
 const db = require('../../fw/db');
+const login = require('../../login');
 
-async function search(req) {
-    if (req.query.userid === undefined || req.query.terms === undefined){
+async function search(req, user) {
+    if (req.body.terms === undefined){
         return "Not enough information to search";
     }
 
-    let userid = req.query.userid;
-    let terms = req.query.terms;
+    let terms = "%"+req.body.terms+"%";
     let result = '';
+    let userid = user.userid;
 
-    let stmt = await db.executeStatement("select ID, title, state from tasks where userID = "+userid+" and title like '%"+terms+"%'");
-    if (stmt.length > 0) {
-        stmt.forEach(function(row) {
-            result += row.title+' ('+row.state+')<br />';
+    const sql = "SELECT ID, title, state FROM tasks WHERE userID=? AND title LIKE ?";
+    const params = [userid, terms];
+    const results = await db.executeStatement(sql, params);
+
+    if (results.length > 0) {
+        results.forEach(function(row) { 
+            result += escape(row.title+' ('+row.state+')');
+            result += '<br />';
         });
     }
 

@@ -1,6 +1,6 @@
 const db = require('./fw/db');
 
-async function getHtml(req) {
+async function getHtml(req, userId) {
     let title = '';
     let state = '';
     let taskId = '';
@@ -8,15 +8,29 @@ async function getHtml(req) {
     let options = ["Open", "In Progress", "Done"];
 
     if(req.query.id !== undefined) {
-        console.log('req.query: ')
-        console.log(req.query);
-        console.log(req.query.id);
         taskId = req.query.id;
-        let conn = await db.connectDB();
-        let [result, fields] = await conn.query('select ID, title, state from tasks where ID = '+taskId);
-        if(result.length > 0) {
-            title = result[0].title;
-            state = result[0].state;
+
+        const getTaskCreatorSql = "SELECT userID FROM tasks WHERE ID=?";
+        const getTaskCreatorParams = [taskId];
+        const taskCreatorResult = await db.executeStatement(getTaskCreatorSql, getTaskCreatorParams);
+
+        if (taskCreatorResult.length === 0) {
+            return `<p class="error">Task nicht gefunden.</p>`;
+        }
+
+        const taskCreatorId = taskCreatorResult[0].userID;
+
+        if (userId !== taskCreatorId) {
+            return `<p class="error">Diese Task wurde nicht von dir erstellt, daher kannst du diese nicht bearbeiten.</p>`;
+        }
+
+        const sql = "SELECT ID, title, state FROM tasks WHERE ID=?";
+        const params = [taskId];
+        const results = await db.executeStatement(sql, params);
+
+        if(results.length > 0) {
+            title = results[0].title;
+            state = results[0].state;
         }
 
         html += `<h1>Edit Task</h1>`;

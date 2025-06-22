@@ -68,7 +68,8 @@ CREATE TABLE `tasks` (
 CREATE TABLE `users` (
   `ID` bigint(20) NOT NULL,
   `username` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL
+  `password` varchar(255) NOT NULL,
+  `mfaSecret` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_general_ci;
 
 --
@@ -130,8 +131,8 @@ insert into roles (ID, title) values (2, 'User');
 insert into roles (ID, title) values (1, 'Admin');
 
 
-insert into users (ID, username, password) values (1, 'admin1', 'Awesome.Pass34');
-insert into users (ID, username, password) values (2, 'user1', 'Amazing.Pass23');
+insert into users (ID, username, password, mfaSecret) values (1, 'admin1', '$argon2id$v=19$m=65536,t=3,p=4$DXy4KQRwW9AJFiI8WDztfA$EpQ2qs+rvbXVOoCgK6t64DMp+R4T/QDRSPLD9j3YGc0', 'I44TAOLCLJAU2RTBMRAFGUDWFFMG2RKE');
+insert into users (ID, username, password, mfaSecret) values (2, 'user1', '$argon2id$v=19$m=65536,t=3,p=4$btsdCizNASIeaL/rCKF/Ag$0CRarPSXt91peh2YBtgV0DZnbQO8Yd/9tMrmYfdojy4', 'I44TAOLCLJAU2RTBMRAFGUDWFFMG2RKE');
 
 insert into permissions(ID, userID, roleID) values(null, 1, 1);
 insert into permissions(ID, userID, roleID) values(null, 2, 2);

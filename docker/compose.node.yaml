@@ -1,9 +1,27 @@
 name: m183_lb2_node
-include:
-  - ./compose.db.yaml
 services:
+  db:
+    image: mariadb:latest
+    container_name: m183-lb2-db
+    expose:
+      - "3306"
+    environment:
+      - MARIADB_ROOT_PASSWORD=Some.Real.Secr3t
+    volumes:
+        - type: bind
+          source: ./db/
+          target: /docker-entrypoint-initdb.d/
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh", "--connect", "--innodb_initialized" ]
+      interval: 3s
+      timeout: 3s
+      retries: 5
+
   web:
       image: node:latest
+      depends_on:
+        db:
+          condition: service_healthy
       user: "node"
       working_dir: /home/node/app
       container_name: m183-lb2-web

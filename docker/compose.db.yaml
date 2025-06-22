@@ -1,10 +1,13 @@
 name: m183_lb2_db
 services:
     db:
-      build: ./db
+      image: mariadb
       container_name: m183-lb2-db
       expose:
         - "3306"
       environment:
         - MARIADB_ROOT_PASSWORD=Some.Real.Secr3t
-
+      volumes:
+        - type: bind
+          source: ./db/m183_lb2.sql
+          target: /docker-entrypoint-initdb.d/

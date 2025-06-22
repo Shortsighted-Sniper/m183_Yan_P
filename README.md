@@ -1,15 +1,21 @@
-# LB2 Applikation
-Diese Applikation ist bewusst unsicher programmiert und sollte nie in produktiven Umgebungen zum Einsatz kommen. Ziel der Applikation ist es, Lernende für mögliche Schwachstellen in Applikationen zu sensibilisieren, diese anzuleiten, wie die Schwachstellen aufgespürt und geschlossen werden können.
+# LB2 Application
 
-Die Applikation wird im Rahmen der LB2 im [Modul 183](https://gitlab.com/ch-tbz-it/Stud/m183/m183) durch die Lernenden bearbeitet.
+This application has been deliberately programmed with security vulnerabilities and should never be used in a production environment. It is used for a school project.
 
-## Hinweise zur Installation
-Die Applikation steht als PHP- oder NodeJS-Applikation zur Verfügung. Abhängig davon, ob Sie die LB2 mit PHP oder NodeJS umsetzen möchten, müssen Sie entweder compose.php.yaml oder compose.node.yaml dem Docker-Compose-Befehl mit übergeben:
-* PHP: `docker compose -f compose.php.yaml up`
-* NodeJS: `docker compose -f compose.node.yaml up`
+The application is available as either a PHP or a NodeJS version. Depending on which version you want to use for LB2, you need to provide the appropriate Docker Compose file:
 
-Bei NodeJS müssen vor dem Start der Container noch mit `npm install` die Abhängigkeiten installiert werden (wichtig: der Befehl muss innerhalb vom `todo-list-node`-Verzeichnis ausgeführt werden).
+* For PHP: `docker compose -f compose.php.yaml up`
+* For NodeJS: `docker compose -f compose.node.yaml up`
 
-Der include-Befehl in den YAML-Files steht erst ab der Docker Compose Version 2.20.3 zur Verfügung (https://docs.docker.com/compose/multiple-compose-files/include/). Sollte der Rechner beim Ausführen des `docker compose`-Befehls einen Fehler bezüglich include werfen, da müssten Sie entweder Docker Compose auf die letzte Version aktualisieren oder die Containerdefinition von `compose.db.yaml` für den Datenbank-Container ins `compose.php.yaml` oder `compose.node.yaml` rein kopieren (unter services).
+Before starting the containers, you need to install the dependencies by running npm install.
+Make sure to run this command inside the todo-list-node directory.
 
-Wichtig: der Port 80 muss auf Ihrem Lokalen Rechner zur Verfügung stehen. Wird dieser bereits verwendet, können Sie in der `compose.php.yaml` respektive in der `compose.node.yaml` den Port so anpassen, dass die Applikation auf einem anderen Port wie dem Port 80 zur Verfügung steht.
+* Username: admin1
+* Password: Awesome.Pass3
+* TOTP Secret: I44TAOLCLJAU2RTBMRAFGUDWFFMG2RKE
+
+User
+
+* Username: user1
+* Password: Amazing.Pass23
+* TOTP Secret: I44TAOLCLJAU2RTBMRAFGUDWFFMG2RKE

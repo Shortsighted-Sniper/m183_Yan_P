@@ -1,14 +1,18 @@
 const db = require('./fw/db');
 
-async function getHtml(req) {
+async function getHtml(req, user) {
     let html = '';
     let taskId = '';
 
     // see if the id exists in the database
     if (req.body.id !== undefined && req.body.id.length !== 0) {
         taskId = req.body.id;
-        let stmt = await db.executeStatement('select ID, title, state from tasks where ID = ' + taskId);
-        if (stmt.length === 0) {
+
+        const sql = "SELECT ID, title, state FROM tasks WHERE ID=?";
+        const params = [taskId];
+        const results = await db.executeStatement(sql, params);
+
+        if (results.length === 0) {
             taskId = '';
         }
     }
@@ -16,12 +20,17 @@ async function getHtml(req) {
     if (req.body.title !== undefined && req.body.state !== undefined){
         let state = req.body.state;
         let title = req.body.title;
-        let userid = req.cookies.userid;
+
+        let userid = user.userid;
 
         if (taskId === ''){
-            stmt = db.executeStatement("insert into tasks (title, state, userID) values ('"+title+"', '"+state+"', '"+userid+"')");
+            const sql = "INSERT INTO tasks (title, state, userID) VALUES (?, ?, ?)";
+            const params = [title, state, userid];
+            const results = await db.executeStatement(sql, params);
         } else {
-            stmt = db.executeStatement("update tasks set title = '"+title+"', state = '"+state+"' where ID = "+taskId);
+            const sql = "UPDATE tasks SET title=?, state=? WHERE ID=?";
+            const params = [title, state, taskId];
+            const results = await db.executeStatement(sql, params);
         }
 
         html += "<span class='info info-success'>Update successfull</span>";

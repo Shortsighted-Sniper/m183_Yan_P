@@ -1,5 +1,5 @@
 const mysql = require('mysql2/promise');
-const dbConfig = require('../config');
+const dbConfig = require('./dbConfig');
 
 // Verbindung zur Datenbank herstellen
 async function connectDB() {
@@ -12,9 +12,9 @@ async function connectDB() {
     }
 }
 
-async function executeStatement(statement) {
+async function executeStatement(statement, parameters) {
     let conn = await connectDB();
-    const [results, fields] = await conn.query(statement);
+    const [results, fields] = await conn.query(statement, parameters);
     return results;
 }
 
